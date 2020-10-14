@@ -34,16 +34,19 @@ public class TokenAPI {
 	@PostMapping
 	// public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer, HttpRequest request, UriComponentsBuilder uri) {
 	public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer) {
-		
+		System.out.println("We want to create the token for customer: " + customer);
+	
 		String username = customer.getName();
 		String password = customer.getPassword();
 		
 		if (username != null && username.length() > 0 && password != null && password.length() > 0 && checkPassword(username, password)) {
 			Token token = createToken(username);
+			System.out.println("token made for: " + token);
 			ResponseEntity<?> response = ResponseEntity.ok(token);
 			return response;			
 		}
 		// bad request
+		System.out.println("bad request. token failed.");
 		return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 	}
