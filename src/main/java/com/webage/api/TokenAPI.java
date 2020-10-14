@@ -34,19 +34,22 @@ public class TokenAPI {
 	@PostMapping
 	// public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer, HttpRequest request, UriComponentsBuilder uri) {
 	public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer) {
-		System.out.println("We want to create the token for customer: " + customer);
+		System.out.println("createTokenForCustomer: " + customer);
 	
 		String username = customer.getName();
 		String password = customer.getPassword();
 		
-		if (username != null && username.length() > 0 && password != null && password.length() > 0 && checkPassword(username, password)) {
+		if (username != null && username.length() > 0
+				&& password != null
+				&& password.length() > 0
+				&& checkPassword(username, password)) {
 			Token token = createToken(username);
 			System.out.println("token made for: " + token);
 			ResponseEntity<?> response = ResponseEntity.ok(token);
 			return response;			
 		}
 		// bad request
-		System.out.println("bad request. token failed.");
+		System.out.println("createTokenForCustomer() bad request. token failed.");
 		return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 	}
@@ -87,7 +90,7 @@ public class TokenAPI {
 	}
 	
     private static Token createToken(String username) {
-    	String scopes = "com.webage.data.apis";
+    	String scopes = "com.api.customer.r";
     	// special case for application user
     	if( username.equalsIgnoreCase("ApiClientApp")) {
     		scopes = "com.webage.auth.apis";
@@ -127,6 +130,7 @@ public class TokenAPI {
 					output += out;
 				}
 				conn.disconnect();
+				System.out.println("getCustomerByNameFromCustomer(): " + output);
 				return CustomerFactory.getCustomer(output);
 			}
 
