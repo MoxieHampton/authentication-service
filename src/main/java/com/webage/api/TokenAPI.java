@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +23,8 @@ import com.webage.util.JWTHelper;
 @RequestMapping("/token")
 public class TokenAPI {
 
+	String dataApiHost = "localhost:8090";
+	
 	//private static Key key = AuthFilter.key;	
 	public static Token appUserToken;
 	
@@ -35,22 +36,16 @@ public class TokenAPI {
 	@PostMapping
 	// public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer, HttpRequest request, UriComponentsBuilder uri) {
 	public ResponseEntity<?> createTokenForCustomer(@RequestBody Customer customer) {
-		System.out.println("createTokenForCustomer: " + customer);
-	
+		
 		String username = customer.getName();
 		String password = customer.getPassword();
 		
-		if (username != null && username.length() > 0
-				&& password != null
-				&& password.length() > 0
-				&& checkPassword(username, password)) {
+		if (username != null && username.length() > 0 && password != null && password.length() > 0 && checkPassword(username, password)) {
 			Token token = createToken(username);
-			System.out.println("token made for: " + token);
 			ResponseEntity<?> response = ResponseEntity.ok(token);
 			return response;			
 		}
 		// bad request
-		System.out.println("createTokenForCustomer() bad request. token failed.");
 		return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 	}
@@ -91,7 +86,7 @@ public class TokenAPI {
 	}
 	
     private static Token createToken(String username) {
-    	String scopes = "com.api.customer.r";
+    	String scopes = "com.webage.data.apis";
     	// special case for application user
     	if( username.equalsIgnoreCase("ApiClientApp")) {
     		scopes = "com.webage.auth.apis";
@@ -109,17 +104,18 @@ public class TokenAPI {
     	
     	return new Token(token_string);
     }
-
-	@Value("#{environment.API_HOST}")
-	String apiHost;
-
+    
+    
 	private Customer getCustomerByNameFromCustomerAPI(String username) {
 		try {
-			if( apiHost == null ) {
-				apiHost = "localhost:8080";
+
+			String apiHost= System.getenv("API_HOST");
+			if(apiHost == null) {
+				apiHost = this.dataApiHost;
 			}
-			String apiURL = "http://" + apiHost + "/api/customers/byname/";
-			URL url = new URL( apiURL + username);
+			URL url = new URL("http://" + apiHost + "/api/customers/byname/" + username);
+			
+			//URL url = new URL("http://localhost:8080/api/customers/byname/" + username);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
@@ -136,7 +132,6 @@ public class TokenAPI {
 					output += out;
 				}
 				conn.disconnect();
-				System.out.println("getCustomerByNameFromCustomer(): " + output);
 				return CustomerFactory.getCustomer(output);
 			}
 
