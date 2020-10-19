@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,11 +45,18 @@ public class RegisterAPI {
 		ResponseEntity<?> response = ResponseEntity.created(location).build();
 		return response;
 	}
-
+	
+	@Value("#{environment.API_HOST}")
+	String apiHost;
+	
 	private void postNewCustomerToCustomerAPI(String json_string) {
 		try {
-
-			URL url = new URL("http://localhost:8080/api/customers");
+			if( apiHost == null ) {
+				apiHost = "localhost:8080";
+			}
+			String apiURL = "http://" + apiHost + "/api/customers";
+			URL url = new URL( apiURL );
+			//URL url = new URL("http://localhost:8080/api/customers");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");

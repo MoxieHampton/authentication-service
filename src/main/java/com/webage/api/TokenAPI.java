@@ -115,9 +115,11 @@ public class TokenAPI {
 
 	private Customer getCustomerByNameFromCustomerAPI(String username) {
 		try {
-
+			if( apiHost == null ) {
+				apiHost = "localhost:8080";
+			}
 			String apiURL = "http://" + apiHost + "/api/customers/byname/";
-			URL url = new URL("http://localhost:8080/api/customers/byname/" + username);
+			URL url = new URL( apiURL + username);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");

@@ -12,3 +12,4 @@ ARG targethost=localhost:8080
 ENV API_HOST=$targethost
 ARG LIBS=app/build/libs
 COPY --from=builder ${LIBS}/ /app/lib
+ENTRYPOINT ["java", "-jar", "./app/lib/authentication-service-0.0.1-SNAPSHOT.jar"]
