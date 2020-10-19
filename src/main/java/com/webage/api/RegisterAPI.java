@@ -25,7 +25,7 @@ import com.webage.domain.Token;
 @RequestMapping("/register")
 public class RegisterAPI {
 	
-	String dataApiHost = "localhost:8090";
+	String dataApiHost = "localhost:8080";
 
 	@PostMapping
 	public ResponseEntity<?> registerCustomer(@RequestBody Customer newCustomer, UriComponentsBuilder uri) {

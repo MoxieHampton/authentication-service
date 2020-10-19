@@ -23,7 +23,7 @@ import com.webage.util.JWTHelper;
 @RequestMapping("/token")
 public class TokenAPI {
 
-	String dataApiHost = "localhost:8090";
+	String dataApiHost = "localhost:8080";
 	
 	//private static Key key = AuthFilter.key;	
 	public static Token appUserToken;
