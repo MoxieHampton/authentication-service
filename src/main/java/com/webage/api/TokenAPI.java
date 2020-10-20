@@ -86,7 +86,7 @@ public class TokenAPI {
 	}
 	
     private static Token createToken(String username) {
-    	String scopes = "com.webage.data.apis";
+    	String scopes = "com.webage.data.apis"; // "com.api.customers.r"
     	// special case for application user
     	if( username.equalsIgnoreCase("ApiClientApp")) {
     		scopes = "com.webage.auth.apis";
@@ -114,7 +114,7 @@ public class TokenAPI {
 				apiHost = this.dataApiHost;
 			}
 			URL url = new URL("http://" + apiHost + "/api/customers/byname/" + username);
-			
+			System.out.println(url);
 			//URL url = new URL("http://localhost:8080/api/customers/byname/" + username);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
